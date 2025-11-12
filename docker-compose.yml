@@ -45,7 +45,7 @@ services:
         echo '✅ requirements installed.'&&
         python manage.py collectstatic --noinput &&
         echo '✅ collectstatic.'&&
-        python manage.py makemigrations companies core news pages users &&
+        python manage.py makemigrations incidents core users &&
         echo '✅ makemigrations.'&&
         python manage.py migrate &&
         echo 'from django.contrib.auth import get_user_model; User = get_user_model(); \
