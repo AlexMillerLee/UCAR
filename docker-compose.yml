@@ -45,11 +45,11 @@ services:
         echo '✅ requirements installed.'&&
         python manage.py collectstatic --noinput &&
         echo '✅ collectstatic.'&&
-        python manage.py makemigrations incidents core users &&
+        python manage.py makemigrations incidents users &&
         echo '✅ makemigrations.'&&
         python manage.py migrate &&
-        echo 'from django.contrib.auth import get_user_model; User = get_user_model(); \
-        User.objects.filter(username=\"admin\").exists() or User.objects.create_superuser(\"admin\",\"admin@example.com\",\"complexpassword\")' | python manage.py shell &&
+        echo '✅ migrate.'&&
+        echo 'from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username=\"admin\").exists() or User.objects.create_superuser(\"admin\",\"admin@example.com\",\"complexpassword\")' | python manage.py shell &&
         echo '✅ running'&&
         gunicorn test_api.wsgi:application --bind 0.0.0.0:8011
       "
