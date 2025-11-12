@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-5*s9qtqy%rsrgyy6mbreh%304*=eh^_&#k$a$@cskxgdbqb9@k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'test_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': "test_api",
+        'USER': "test_api",
+        'PASSWORD': "testapiV5N1D8",
+        'HOST': 'postgres_test_api',
+        'PORT': '5432',
     }
 }
 

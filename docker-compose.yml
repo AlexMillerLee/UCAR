@@ -1,0 +1,63 @@
+services:
+  postgres-real-history:
+    image: postgres:16
+    container_name: postgres_test_api
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: test_api
+      POSTGRES_USER: test_api
+      POSTGRES_PASSWORD: testapiV5N1D8
+    volumes:
+      - postgres_test_api:/var/lib/postgresql/data
+    networks:
+      - test_api
+      
+      
+  django:
+    mem_limit: 1G
+    cpus: 1.0
+    image: python:3.12-slim
+    container_name: django_test_api
+    working_dir: /app
+    restart: unless-stopped
+    environment: 
+      - DJANGO_SETTINGS_MODULE=test_api.settings
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y git gcc build-essential &&
+        echo '---git and build tools installed' &&
+        git --version &&
+        gcc --version &&
+        if [ ! -d '/app/.git' ]; then
+          echo '📦 Cloning repo...';
+          git clone https://github.com/AlexMillerLee/UCAR.git /tmp/repo &&
+          shopt -s dotglob &&
+          mv /tmp/repo/* /app/
+          echo '✅ Repo cloned.';
+        else
+          echo '✅ Repo already exists. Skip cloning.';
+        fi
+        echo '<!___ INSTALING DJANGO ___!>'&&
+        cd /app &&
+        ls -lh &&
+        pip install --no-cache-dir -r requirements.txt &&
+        echo '✅ requirements installed.'&&
+        python manage.py collectstatic --noinput &&
+        echo '✅ collectstatic.'&&
+        python manage.py makemigrations companies core news pages users &&
+        echo '✅ makemigrations.'&&
+        python manage.py migrate &&
+        echo '✅ running'&&
+        gunicorn test_api.wsgi:application --bind 0.0.0.0:8011
+      "
+    networks:
+       - test_api
+    ports:
+      - "8011:8011" 
+    depends_on:
+      - postgres-real-history
+networks:
+  test_api:
+volumes:
+  postgres_test_api:
